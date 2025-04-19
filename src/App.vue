@@ -1,6 +1,7 @@
 <script setup>
-import { ref , reactive} from 'vue';
+import { ref , reactive, computed} from 'vue';
 import Task from './components/Task.vue';
+import Filter from './components/Filter.vue';
 
 const appName = "To-Do App";
 const tasks= reactive([
@@ -71,6 +72,23 @@ function toggleCompleted(id) {
   }
 }
 
+const filterBy = ref("");
+
+function setFilter(value) {
+  filterBy.value = value;
+} 
+
+const filteredTasks = computed(() => {
+  switch (filterBy.value) {
+    case "todo":
+      return tasks.filter(task => !task.completed);
+    case "done":
+      return tasks.filter(task => task.completed);
+    default:
+      return tasks;
+  }
+});
+
 </script>
 
 <template>
@@ -86,26 +104,13 @@ function toggleCompleted(id) {
 
     </div>
     
-    <div class="filters">
-      <div>
-        <p>Filter by state</p>
-        <div class="badges">
-          <div class="badge">
-            To-Do
-          </div>
-          <div class="badge">
-            Done
-          </div>
-          <span class="clear">
-            x clear
-          </span>
-        </div>
-      </div>
-    </div>
+    
+      <Filter  :filterBy = "filterBy" @setFilter="setFilter"/>
+   
 
     <div class="tasks">
       
-      <Task  @toggleCompleted="toggleCompleted" v-for="(task, index) in tasks" :key="index" :task="task" />
+      <Task  @toggleCompleted="toggleCompleted" v-for="(task, index) in filteredTasks" :key="index" :task="task" />
     </div>
 
     <div class="add-task">
@@ -150,37 +155,6 @@ function toggleCompleted(id) {
 
 }
 
-.filters {
-  display: flex;
-  flex-direction: column;
-  margin: 40px 0;
-
-  p {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 21px;
-    letter-spacing: 0em;
-    text-align: left;
-  }
-
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 14px 0;
-    align-items: center;
-  }
-
-  .clear {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 16px;
-    letter-spacing: 0em;
-    text-align: left;
-    cursor: pointer;
-  }
-
-}
 
 .tasks {
   display: grid;
