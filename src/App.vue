@@ -2,7 +2,7 @@
 import { ref , reactive, computed} from 'vue';
 import Task from './components/Task.vue';
 import Filter from './components/Filter.vue';
-
+import Modalwindow from './components/Modalwindow.vue';
 const appName = "To-Do App";
 const tasks= reactive([
     {
@@ -88,7 +88,7 @@ const filteredTasks = computed(() => {
       return tasks;
   }
 });
-
+let modalIsActive = ref(false);
 </script>
 
 <template>
@@ -100,10 +100,10 @@ const filteredTasks = computed(() => {
           {{ appName }}
         </h1>
       </div>
-      <input type="text" placeholder="Search..." class="secondary" />
-
+      <div class="header-side">
+        <button @click="modalIsActive = true" class="btn secondary">+ Add Task</button>
     </div>
-    
+    </div>
     
       <Filter  :filterBy = "filterBy" @setFilter="setFilter"/>
    
@@ -120,7 +120,7 @@ const filteredTasks = computed(() => {
       <button @click="addTask" class="btn gray">Add Task</button>
 
     </div>
-
+    <Modalwindow v-if="modalIsActive" @closePopup="modalIsActive=false"/>
   </main>
   
    
@@ -163,23 +163,6 @@ const filteredTasks = computed(() => {
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-
-.add-task {
-  margin-top: 60px;
-
-  input, textarea {
-    width: 360px;
-    max-width: 100%;
-    margin-top: 12px;
-    padding: 5px;
-  }
-
-  button {
-    width: 360px;
-    margin-top: 12px;
   }
 }
 
